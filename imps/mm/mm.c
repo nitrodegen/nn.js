@@ -38,15 +38,6 @@ __attribute__((used)) double* transpose_matrix(double *a ,int X , int Y){
 
 }
 
-
-double dot_product_1d(double * a, double * b ,int size){ 
-    double out = 0;
-    for(int i = 0; i < size;i++){
-        out +=  a[i] * b[i];
-    }
-    return out ;
-}
-
 double * init_mat(int x,int y){
     
     double *out = (double*)malloc(sizeof(double)*x*y);
@@ -57,17 +48,72 @@ double * init_mat(int x,int y){
 
 }
 
+double dot_product_1d(double * a, double * b ,int size){ 
+    double out = 0;
+    for(int i = 0; i < size;i++){
+        
+      
+          //  printf("a:%lf b:%lf out:%lf\n",a[i],b[i],out);  
+        
+        out += (  a[i] * b[i] );
+
+
+    }
+    
+
+//    printf("********\n");
+    return out ;
+}
+
+double * dot_prod_single(double *a, double * b ,int ax,int ay,int bx,int by){ 
+
+
+
+    double * out = init_mat(ay,by   );
+    int idx = 0  ;
+
+    for(int i = 0 ;i < by;i++){
+    
+        double batch_b[bx];
+        for(int j = 0 ;j < bx;j++){
+            batch_b[j] = b[bx*i+j];
+        }
+
+
+        double batch_a[ax];
+        for(int j = 0 ;j < ay;j++){
+            batch_a[j]= a[ax*i+j];
+        }   
+
+        double bout = dot_product_1d(batch_a,batch_b,bx);
+        //printf("%lf\n",out);
+        out[idx++ ] = bout;
+
+
+
+    }
+
+    return out;
+
+}
+
+
+
+
 __attribute__((used)) double* compute_linear_layer(double *a ,double *b , double *bias, int xa , int ya,int xb,int yb ){
 
-    double *out = (double*)malloc(sizeof(double)*xa*yb);
-    memset(out,0x00,sizeof(double)*xa*yb);
+    double *out = (double*)malloc(sizeof(double)*ya*yb);
+    //printf("xa:%d ya:%d xb:%d yb:%d\n",xa,ya,xb,yb);
+
+    memset(out,0x00,sizeof(double)*ya*yb);
 
     int looper = 0; 
+
     for(int i = 0;i < ya;i++){
 
         double *a_batch = init_mat(xa,1);
         int al = 0 ;
-
+       // printf("\nbatch a size:%d\n",xa);
         for(int j = 0 ;j < xa;j++){
             a_batch[al++] = a[xa*i+j];
         }
@@ -80,10 +126,12 @@ __attribute__((used)) double* compute_linear_layer(double *a ,double *b , double
 
             int bl =0 ; 
             double *b_batch = init_mat(xb,1);
+ 
             for(int z = 0; z < xb;z++){
                 b_batch[bl++] = b[xb*j+z];
             }
-            double out_b = dot_product_1d(a_batch,b_batch,xb) + bias[bias_it++];
+
+            double out_b = dot_product_1d(a_batch,b_batch,xb)+bias[bias_it++];
             out[looper ++ ] =out_b;
  
             free(b_batch);            
@@ -95,72 +143,11 @@ __attribute__((used)) double* compute_linear_layer(double *a ,double *b , double
         free(a_batch);
 
     }
-
-
+ 
     return out;    
 
 }
 
-__attribute__((used)) double* matmul(double *a ,double *b , int xa , int ya,int xb,int yb) {
-    double *out = (double*)malloc(sizeof(double)*xa*ya);
-    memset(out,0x00,sizeof(double)*xa*ya);
-
-    //mapping mat into 1d array (for speed purposes and memory managment)
-    // A[width*row + col]
-    // y = row 
-    // x = col 
-
-
-    if(ya !=  1 || yb != 1){
-
-      //  if(xa == xb && ya == yb){
-            
-            int zk = 0; 
-            printf("\n** b arr ** ");
-            //double* nd = transpose_matrix(b,xb,yb);
-            //dbg_arr(nd,yb,xb);
-            //memcpy(b,nd,sizeof(double)*yb*xb);
-
-            for(int i = 0 ;i < ya;i++){
-                for(int j = 0 ;j < xa;j++){
-
-                    double zd = 0x00 ;
-
-                    for(int z = 0; z < yb;z++){
-                        //a[i][z] * b[z][j]
-
-                    //  printf("\nx:%c y:%c  zk:%d",(char)a[x*i+z],(char)b[y*z+j],zk);
-                        double num1 = a[xa*i+z];
-                        double num2 = b[xb*z+j];
-                        printf("\nx:%lf y:%lf  zk:%d\n",num1,num2,zk);
-                        zd+= num1*num2;
-
-
-                    }  
-
-                    out[zk++] =zd;
-
-                // printf("\nzd:%lf",zd);   
-                }
-            }
-      //  }
-        
-    }
-
-    else{
-        printf("\n??");
-        double ox = 0x00;
-
-        for(int i = 0 ;i < ya;i++){
-            for(int j = 0 ; j< xa;j++){
-                ox+= ( a[xa*i+j]*b[xa*i+j]);
-            }
-        }
-        out[0] = ox;
-
-    }
-    return out;
-}
 
 int main(){
 

@@ -1420,13 +1420,13 @@ var _malloc = Module["_malloc"] = createExportWrapper("malloc", asm);
 var _init_mat = Module["_init_mat"] = createExportWrapper("init_mat", asm);
 
 /** @type {function(...*):?} */
+var _dot_prod_single = Module["_dot_prod_single"] = createExportWrapper("dot_prod_single", asm);
+
+/** @type {function(...*):?} */
 var _compute_linear_layer = Module["_compute_linear_layer"] = createExportWrapper("compute_linear_layer", asm);
 
 /** @type {function(...*):?} */
 var _free = Module["_free"] = createExportWrapper("free", asm);
-
-/** @type {function(...*):?} */
-var _matmul = Module["_matmul"] = createExportWrapper("matmul", asm);
 
 /** @type {function(...*):?} */
 var ___errno_location = Module["___errno_location"] = createExportWrapper("__errno_location", asm);
