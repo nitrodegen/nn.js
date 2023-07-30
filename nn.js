@@ -732,7 +732,7 @@ function log_softmax(x){
         if(typeof x[i] == "number"){
             x[i] = Math.exp(x[i])
         }
-    }
+    }targ.matrix[0][0]
 
     var exp_dat = x
     var  mzd = sum_array(exp_dat)
@@ -1242,7 +1242,7 @@ class Test_1{
             for(var j = 0 ;j < NIMG;j++){
                 
             
-
+                //this still doenst work ,cant figure out why tho...
 
                 if(db.images[j][0].matrix[0] != null ){
  
